@@ -8,31 +8,51 @@ function getComputerChoice() {
         return "rock"
 }
 
-function getHumanChoice() {
-    let choice = prompt("Select rock, paper, or scissors.");
-    return choice.toLowerCase();
-}
-
-function playGame() {
-    function playRound(humanChoice, computerChoice) {
-        if (humanChoice === computerChoice)
-            alert("Tie! " + humanChoice + " ties with " + computerChoice + ".")
-        else if ((humanChoice === "paper" && computerChoice === "rock") || (humanChoice === "scissors" && computerChoice === "paper") || (humanChoice === "rock" && computerChoice === "scissors")) {
-            alert("You win! " + humanChoice + " beats " + computerChoice + ".")
-            humanScore++
-        }
-        else {
-            alert("You lost! " + computerChoice + " beats " + humanChoice + ".")
-            computerScore++
-        }
+function playRound(playerChoice, computerChoice) {
+    if (playerChoice === computerChoice)
+        statusText.textContent = "Tie! " + playerChoice + " ties with " + computerChoice + "."
+    else if ((playerChoice === "paper" && computerChoice === "rock") || (playerChoice === "scissors" && computerChoice === "paper") || (playerChoice === "rock" && computerChoice === "scissors")) {
+        playerScore++
+        statusText.textContent = "You Win! " + playerChoice + " beats " + computerChoice + "."
+        playerScoreText.textContent = "Player Score: " + playerScore
+    }
+    else {
+        computerScore++
+        statusText.textContent = "You Lose! " + computerChoice + " beats " + playerChoice + "."
+        computerScoreText.textContent = "Computer Score: " + computerScore
     }
 
-    let humanScore = 0, computerScore = 0
+    round++
+    roundText.textContent = "Round " + round
 
-    for (let i = 0; i < 5; i++)
-        playRound(getHumanChoice(), getComputerChoice())
+    if (round === 5) {
+        if (playerScore === computerScore)
+            gameOverTitle.textContent = "Tie!"
+        else if (playerScore > computerScore)
+            gameOverTitle.textContent = "You Win!"
+        else
+            gameOverTitle.textContent = "You Lose!"
 
-    alert("Your Score: " + humanScore + "\nComputer Score: " + computerScore)
+        gameOverModal.showModal()
+    }
 }
 
-playGame()
+let playerScore = 0, computerScore = 0
+let round = 0
+const buttonContainer = document.querySelector("#button-container")
+const playerScoreText = document.querySelector("#player-score")
+const computerScoreText = document.querySelector("#computer-score")
+const statusText = document.querySelector("#status")
+const roundText = document.querySelector("#round")
+const gameOverModal = document.querySelector("#game-over-modal")
+const gameOverTitle = document.querySelector("#game-over-title")
+const replayButton = document.querySelector("#replay-button")
+
+buttonContainer.addEventListener("click", function(event) {
+    if (round < 5)
+        playRound(event.target.id, getComputerChoice())
+})
+
+replayButton.addEventListener("click", function() {
+    location.reload()
+})
